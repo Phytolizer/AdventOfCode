@@ -7,7 +7,8 @@ LDFLAGS := $(baseldflags)
 year := 2022
 days := \
 	01 \
-	02
+	02 \
+	03
 
 selfdir := 2022/
 
