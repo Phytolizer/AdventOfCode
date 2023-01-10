@@ -8,6 +8,7 @@ void read_file(const char* path, line_callback* line_cb, finish_callback* finish
 {
     FILE* f = fopen(path, "r");
     if (f == NULL) {
+        fprintf(stderr, "couldn't open %s\n", path);
         perror("fopen");
         exit(1);
     }
