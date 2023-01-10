@@ -7,16 +7,28 @@ struct state {
     int score;
 };
 
+enum {
+    irock,
+    ipaper,
+    iscissors,
+    rock = 1,
+    paper = 2,
+    scissors = 3,
+    lose = 0,
+    draw = 3,
+    win = 6,
+};
+
 static const int scores[] = {
-    [3 * 0 + 0] = 1 + 3,
-    [3 * 0 + 1] = 2 + 6,
-    [3 * 0 + 2] = 3 + 0,
-    [3 * 1 + 0] = 1 + 0,
-    [3 * 1 + 1] = 2 + 3,
-    [3 * 1 + 2] = 3 + 6,
-    [3 * 2 + 0] = 1 + 6,
-    [3 * 2 + 1] = 2 + 0,
-    [3 * 2 + 2] = 3 + 3,
+    [3 * irock     + irock    ] = rock     + draw,
+    [3 * irock     + ipaper   ] = paper    + win,
+    [3 * irock     + iscissors] = scissors + lose,
+    [3 * ipaper    + irock    ] = rock     + lose,
+    [3 * ipaper    + ipaper   ] = paper    + draw,
+    [3 * ipaper    + iscissors] = scissors + win,
+    [3 * iscissors + irock    ] = rock     + win,
+    [3 * iscissors + ipaper   ] = paper    + lose,
+    [3 * iscissors + iscissors] = scissors + draw,
 };
 
 static void part1_line(void* user, const char* line, size_t len)
@@ -49,15 +61,15 @@ static void part1(const char* path)
 
 static void part2_line(void* user, const char* line, size_t len) {
     static const int moves[] = {
-        [0 + 3 * 0] = 2,
-        [0 + 3 * 1] = 0,
-        [0 + 3 * 2] = 1,
-        [1 + 3 * 0] = 0,
-        [1 + 3 * 1] = 1,
-        [1 + 3 * 2] = 2,
-        [2 + 3 * 0] = 1,
-        [2 + 3 * 1] = 2,
-        [2 + 3 * 2] = 0,
+        [irock     + lose] = iscissors,
+        [irock     + draw] = irock,
+        [irock     + win ] = ipaper,
+        [ipaper    + lose] = irock,
+        [ipaper    + draw] = ipaper,
+        [ipaper    + win ] = iscissors,
+        [iscissors + lose] = ipaper,
+        [iscissors + draw] = iscissors,
+        [iscissors + win ] = irock,
     };
 
     if (len != 3) {
