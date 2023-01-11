@@ -6,6 +6,16 @@
 
 int read_int_or_die(const char* text)
 {
+    struct int_with_tail with_tail = read_int(text);
+    if (*with_tail.tail != 0) {
+        fputs("line is not a number", stderr);
+        exit(1);
+    }
+    return with_tail.value;
+}
+
+struct int_with_tail read_int(const char* text)
+{
     errno = 0;
     char* endp;
     long val = strtol(text, &endp, 10);
@@ -17,11 +27,10 @@ int read_int_or_die(const char* text)
         fputs("number is too large or too small", stderr);
         exit(1);
     }
-    if (*endp != 0) {
-        fputs("line is not a number", stderr);
-        exit(1);
-    }
-    return (int)val;
+    return (struct int_with_tail){
+        .value = (int)val,
+        .tail = endp,
+    };
 }
 
 
