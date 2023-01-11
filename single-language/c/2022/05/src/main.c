@@ -73,6 +73,7 @@ static void line(void* user, const char* line, size_t len)
         memset(state->stack_sizes, 0, stacks_sz);
     }
 
+    // BUG: currently reallocated lines are NOT entirely overwritten!
     if (state->parsing_crates) {
         for (size_t line_idx = 1; line_idx < len; line_idx += 4) {
             if (line[line_idx] == '1') {
