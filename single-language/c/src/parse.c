@@ -33,4 +33,21 @@ struct int_with_tail read_int(const char* text)
     };
 }
 
+bool tag(const char** p_text, const char* lit, size_t lit_len)
+{
+    if (memcmp(*p_text, lit, lit_len) != 0) {
+        return false;
+    }
+
+    *p_text += lit_len;
+    return true;
+}
+
+void tag_or_die(const char** p_text, const char* lit, size_t lit_len)
+{
+    if (!tag(p_text, lit, lit_len)) {
+        fprintf(stderr, "missing tag '%.*s'\n", (int)lit_len, lit);
+        exit(1);
+    }
+}
 
