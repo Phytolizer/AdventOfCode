@@ -1,6 +1,7 @@
 #include <advent/macro.h>
 #include <advent/read.h>
 #include <assert.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -49,26 +50,50 @@ static void part1(const char* path)
     read_file(path, part1_line, part1_finish, &state);
 }
 
+enum {
+    CHAR_COUNT = 52,
+    GROUPS = 3,
+};
+
+typedef bool group[CHAR_COUNT];
+
 struct part2_state {
     size_t group_idx;
-    char prev_groups[MAX_LINE][2];
+    group prev_groups[GROUPS];
     int sum;
 };
 
 static void part2_line(void* user, const char* line, size_t len)
 {
     struct part2_state* state = user;
-    if (state->group_idx < 2) {
-        memcpy(state->prev_groups[state->group_idx], line, len);
-        state->prev_groups[state->group_idx][len] = 0;
+    memset(state->prev_groups[state->group_idx], 0, sizeof(group));
+    for (size_t i = 0; i < len; i++) {
+        assert(priority(line[i]) > 0);
+        state->prev_groups[state->group_idx][priority(line[i]) - 1] = true;
+    }
+    if (state->group_idx == GROUPS - 1) {
+        for (size_t i = 0; i < CHAR_COUNT; i++) {
+            bool all = true;
+            for (size_t j = 0; j < GROUPS; j++) {
+                if (!state->prev_groups[j][i]) {
+                    all = false;
+                    break;
+                }
+            }
+            if (all) {
+                state->sum += i + 1;
+            }
+        }
+        state->group_idx = 0;
     } else {
+        state->group_idx += 1;
     }
 }
 
 static void part2_finish(void* user)
 {
     struct part2_state* state = user;
-    printf("Part 1: %d\n", state->sum);
+    printf("Part 2: %d\n", state->sum);
 }
 
 static void part2(const char* path)
@@ -80,6 +105,7 @@ static void part2(const char* path)
 static void solve_file(const char* path)
 {
     part1(path);
+    part2(path);
 }
 
 ADVENT_MAIN

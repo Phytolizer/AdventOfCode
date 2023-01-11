@@ -1,12 +1,16 @@
 debug ?= 1
+noasan ?= 0
 years := $(wildcard 20*/)
 basecflags := -std=gnu11 -MMD -MP
 baseldflags :=
 ifeq ($(debug),1)
-basecflags += -Wall -Wextra -Wpedantic -Wmissing-prototypes -Werror -ggdb3 -fsanitize=address
-baseldflags += -fsanitize=address
+basecflags += -Wall -Wextra -Wpedantic -Wmissing-prototypes -Werror -ggdb3
 else
 basecflags += -O2
+endif
+ifeq ($(noasan),0)
+basecflags += -fsanitize=address
+baseldflags += -fsanitize=address
 endif
 basecppflags := -isystem include
 
