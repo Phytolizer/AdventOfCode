@@ -81,11 +81,11 @@ static void line(void* user, const char* line, size_t len)
                 return;
             }
             size_t crate_idx = (line_idx - 1) / 4;
-            size_t stack_size = state->stack_sizes[crate_idx];
-            state->crates[crate_idx] = realloc(state->crates[crate_idx], (stack_size + 1));
-            memmove(state->crates[crate_idx] + 1, state->crates[crate_idx], stack_size);
+            size_t* stack_size = &state->stack_sizes[crate_idx];
+            state->crates[crate_idx] = realloc(state->crates[crate_idx], (*stack_size + 1));
+            memmove(state->crates[crate_idx] + 1, state->crates[crate_idx], *stack_size);
             state->crates[crate_idx][0] = line[line_idx];
-            state->stack_sizes[crate_idx]++;
+            (*stack_size)++;
         }
     } else {
         const char* mover = line;
